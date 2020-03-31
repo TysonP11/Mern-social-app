@@ -263,7 +263,7 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
   } catch (err) {
     console.error(err.message);
     if (err.kind === 'ObjectId') {
-      return res.status(404).json({ msg: 'Post not Found.' });
+      return res.status(404).json({ msg: 'Not Found.' });
     }
     res.status(500).send('Server Error');
   }
