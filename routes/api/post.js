@@ -2,6 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 const router = express.Router();
+const upload = require('../upload');
 
 const Post = require('../../models/Post');
 const Users = require('../../models/Users');
@@ -268,4 +269,33 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// @route       PUT /api/post/photo
+// @ desc       post a photo
+// @access      Private
+router.post('/photo/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    upload(req, res, error => {
+      if (error) {
+        res.status(500).send('Server Error');
+      } else {
+        if (req.file == undefined) {
+          res.status(404).json({ msg: 'Photo not Found' });
+        } else {
+          const fullPath = 'photos/' + req.file.filename;
+
+          post.photo = fullPath;
+        }
+      }
+    });
+    await post.save();
+
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
