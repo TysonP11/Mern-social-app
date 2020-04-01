@@ -34,86 +34,47 @@ router.get('/me', auth, async (req, res) => {
 // @desc     Create or update user profile
 // @access   Private
 
-router.post(
-  '/',
-  [
-    auth,
-    [
-      check('status', 'Status is required')
-        .not()
-        .isEmpty(),
-      check('skills', 'Skills is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const {
-      company,
-      location,
-      website,
-      bio,
-      skills,
-      status,
-      githubusername,
-      youtube,
-      twitter,
-      instagram,
-      linkedin,
-      facebook
-    } = req.body;
-
-    const profileFields = {};
-    profileFields.user = req.user.id;
-    if (company) profileFields.company = company;
-    if (website) profileFields.website = website;
-    if (location) profileFields.location = location;
-    if (bio) profileFields.bio = bio;
-    if (status) profileFields.status = status;
-    if (githubusername) profileFields.githubusername = githubusername;
-    if (skills) {
-      if (Array.isArray(skills)) {
-        profileFields.skills = skills;
-      } else {
-        profileFields.skills = skills.split(',').map(skill => skill.trim());
-      }
-    }
-
-    // Build social object and add to profileFields
-    profileFields.socials = {};
-    if (youtube) profileFields.socials.youtube = youtube;
-    if (twitter) profileFields.socials.twitter = twitter;
-    if (facebook) profileFields.socials.facebook = facebook;
-    if (linkedin) profileFields.socials.linkedin = linkedin;
-    if (instagram) profileFields.socials.instagram = instagram;
-
-    try {
-      let profile = await Profile.findOne({ user: req.user.id });
-      if (profile) {
-        //Update
-        profile = await Profile.findOneAndUpdate(
-          { user: req.user.id },
-          { $set: profileFields },
-          { new: true }
-        );
-        return res.json(profile);
-      }
-
-      // Create
-      profile = new Profile(profileFields);
-      await profile.save();
-      res.json(profile);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server Error');
-    }
+router.post('/', auth, async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-);
+
+  const { bio, youtube, twitter, instagram, linkedin, facebook } = req.body;
+
+  const profileFields = {};
+  profileFields.user = req.user.id;
+  if (bio) profileFields.bio = bio;
+
+  // Build social object and add to profileFields
+  profileFields.social = {};
+  if (youtube) profileFields.social.youtube = youtube;
+  if (twitter) profileFields.social.twitter = twitter;
+  if (facebook) profileFields.social.facebook = facebook;
+  if (linkedin) profileFields.social.linkedin = linkedin;
+  if (instagram) profileFields.social.instagram = instagram;
+
+  try {
+    let profile = await Profile.findOne({ user: req.user.id });
+    if (profile) {
+      //Update
+      profile = await Profile.findOneAndUpdate(
+        { user: req.user.id },
+        { $set: profileFields },
+        { new: true }
+      );
+      return res.json(profile);
+    }
+
+    // Create
+    profile = new Profile(profileFields);
+    await profile.save();
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 // @route       GET api/profile/
 // @ desc       Get all users profile
@@ -164,199 +125,90 @@ router.delete('/', auth, async (req, res) => {
   }
 });
 
-// @route       PUT api/profile/experience
-// @ desc       adding experience to profile
+// @route       PUT api/profile/follow/:id
+// @ desc       follow an user
 // @access      Private
-
-router.put(
-  '/experience',
-  [
-    auth,
-    [
-      check('title', 'Title is required.')
-        .not()
-        .isEmpty(),
-      check('company', 'Company is required')
-        .not()
-        .isEmpty(),
-      check('from', 'from is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const {
-      title,
-      company,
-      location,
-      from,
-      to,
-      current,
-      description
-    } = req.body;
-    const newExperience = {
-      title,
-      company,
-      location,
-      from,
-      to,
-      current,
-      description
-    };
-
-    try {
-      const profile = await Profile.findOne({ user: req.user.id });
-
-      profile.experience.unshift(newExperience);
-      await profile.save();
-
-      res.json(profile);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
-    }
-  }
-);
-
-// @route       DELETE api/profile/experience/:exp_id
-// @ desc       delete experience from profile
-// @access      Private
-
-router.delete('/experience/:exp_id', auth, async (req, res) => {
+router.put('/follow/:id', auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const followedProfile = await Profile.findById(req.params.id);
+    const followingProfile = await Profile.findOne({ user: req.user.id });
 
-    const removeIndex = profile.experience
-      .map(item => item.id)
-      .indexOf(req.params.exp_id);
-    profile.experience.splice(removeIndex);
+    if (!followedProfile) {
+      return res.status(404).json({ msg: 'Profile not Found' });
+    }
 
-    await profile.save();
+    if (
+      followedProfile.followers.filter(
+        follower => follower.user.toString() === req.user.id
+      ).length > 0
+    ) {
+      return res
+        .status(400)
+        .json({ msg: 'You are already following this Profile' });
+    }
 
-    res.json(profile);
+    followedProfile.followers.unshift({ user: req.user.id });
+
+    followingProfile.following.unshift({ user: req.params.id });
+
+    await followingProfile.save();
+    await followedProfile.save();
+
+    res.json({ followedProfile, followingProfile });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not Found.' });
+    }
+    res.status(500).send('Server Error');
   }
 });
 
-// @route       PUT api/profile/education
-// @ desc       adding education to profile
+// @route       PUT api/profile/unfollow/:id
+// @ desc       unfollow an user
 // @access      Private
 
-router.put(
-  '/education',
-  [
-    auth,
-    [
-      check('school', 'School is required.')
-        .not()
-        .isEmpty(),
-      check('degree', 'Degree is required')
-        .not()
-        .isEmpty(),
-      check('from', 'from is required')
-        .not()
-        .isEmpty(),
-      check('fieldofstudy', 'Field of Study is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+router.put('/unfollow/:id', auth, async (req, res) => {
+  try {
+    const followedProfile = await Profile.findById(req.params.id);
+    const followingProfile = await Profile.findOne({ user: req.user.id });
+
+    if (!followedProfile) {
+      return res.status(404).json({ msg: 'Profile not Found' });
     }
 
-    const {
-      school,
-      degree,
-      fieldofstudy,
-      from,
-      to,
-      current,
-      description
-    } = req.body;
-    const newEducation = {
-      school,
-      degree,
-      fieldofstudy,
-      from,
-      to,
-      current,
-      description
-    };
-
-    try {
-      const profile = await Profile.findOne({ user: req.user.id });
-
-      profile.education.unshift(newEducation);
-      await profile.save();
-
-      res.json(profile);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
+    if (
+      followedProfile.followers.filter(
+        follower => follower.user.toString() === req.user.id
+      ).length === 0
+    ) {
+      return res
+        .status(400)
+        .json({ msg: 'You are not following this Profile' });
     }
-  }
-);
 
-// @route       DELETE api/profile/education/:edu_id
-// @ desc       delete experience from profile
-// @access      Private
+    const removeFollowerIndex = followedProfile.followers
+      .map(follower => follower.user.toString())
+      .indexOf(req.user.id);
 
-router.delete('/education/:edu_id', auth, async (req, res) => {
-  try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    followedProfile.followers.splice(removeFollowerIndex, 1);
 
-    const removeIndex = profile.education
-      .map(item => item.id)
-      .indexOf(req.params.edu_id);
-    profile.education.splice(removeIndex);
+    const removeFollowedIndex = followingProfile.following
+      .map(following => following.user.toString())
+      .indexOf(req.user.id);
 
-    await profile.save();
+    followingProfile.following.splice(removeFollowedIndex, 1);
 
-    res.json(profile);
+    await followingProfile.save();
+    await followedProfile.save();
+
+    res.json({ followedProfile, followingProfile });
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
-  }
-});
-
-// @route       GET api/profile/github/:username
-// @ desc       Get user repo from github
-// @access      Public
-
-router.get('/github/:username', async (req, res) => {
-  try {
-    const options = {
-      uri: `https://api.github.com/users/${
-        req.params.username
-      }/repos?per_page=55&sort=created:asc&client_id=${config.get(
-        'gitClientID'
-      )}&client_secret=${config.get('gitSecret')}`,
-      method: 'GET',
-      headers: { 'user-agent': 'node.js' }
-    };
-
-    request(options, (error, response, body) => {
-      if (error) console.error(error);
-
-      if (response.statusCode !== 200) {
-        res.status(404).json({ msg: 'No Github Profile Found' });
-      }
-
-      res.json(JSON.parse(body));
-    });
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not Found.' });
+    }
+    res.status(500).send('Server Error');
   }
 });
 
