@@ -235,4 +235,5 @@ router.get('/:user_id', async (req, res) => {
     date: -1
   });
 });
+
 module.exports = router;
