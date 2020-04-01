@@ -24,14 +24,6 @@ const ProfileSchema = new mongoose.Schema({
       }
     }
   ],
-  posts: [
-    {
-      post: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'post'
-      }
-    }
-  ],
   social: {
     youtube: {
       type: String

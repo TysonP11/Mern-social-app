@@ -8,6 +8,7 @@ const config = require('config');
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/Users');
+const Post = require('../../models/Post');
 
 // @route       GET api/profile/me
 // @ desc       Get current user profile
@@ -212,4 +213,26 @@ router.put('/unfollow/:id', auth, async (req, res) => {
   }
 });
 
+// @route GET api/profile/:user_id
+// @desc See all posts made by an user
+// @access Public
+
+router.get('/:user_id', async (req, res) => {
+  try {
+    const posts = await Post.find({ user: req.params.user_id }).sort({
+      date: -1
+    });
+
+    res.json(posts);
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Post not Found.' });
+    }
+    res.status(500).send('Server Error');
+  }
+  const posts = await Post.find({ user: req.params.user_id }).sort({
+    date: -1
+  });
+});
 module.exports = router;
