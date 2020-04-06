@@ -16,7 +16,7 @@ const Post = require('../../models/Post');
 router.get('/me', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.user.id
+      user: req.user.id,
     }).populate('user', ['name', 'avatar']);
 
     if (!profile) {
@@ -96,7 +96,7 @@ router.get('/', async (req, res) => {
 router.get('/user/:user_id', async (req, res) => {
   try {
     const profile = await Profile.findOne({
-      user: req.params.user_id
+      user: req.params.user_id,
     }).populate('user', ['name', 'avatar']);
 
     if (!profile) return res.status(400).json({ msg: 'Profile not Found!' });
@@ -140,7 +140,7 @@ router.put('/follow/:id', auth, async (req, res) => {
 
     if (
       followedProfile.followers.filter(
-        follower => follower.user.toString() === req.user.id
+        (follower) => follower.user.toString() === req.user.id
       ).length > 0
     ) {
       return res
@@ -180,7 +180,7 @@ router.put('/unfollow/:id', auth, async (req, res) => {
 
     if (
       followedProfile.followers.filter(
-        follower => follower.user.toString() === req.user.id
+        (follower) => follower.user.toString() === req.user.id
       ).length === 0
     ) {
       return res
@@ -189,13 +189,13 @@ router.put('/unfollow/:id', auth, async (req, res) => {
     }
 
     const removeFollowerIndex = followedProfile.followers
-      .map(follower => follower.user.toString())
+      .map((follower) => follower.user.toString())
       .indexOf(req.user.id);
 
     followedProfile.followers.splice(removeFollowerIndex, 1);
 
     const removeFollowedIndex = followingProfile.following
-      .map(following => following.user.toString())
+      .map((following) => following.user.toString())
       .indexOf(req.user.id);
 
     followingProfile.following.splice(removeFollowedIndex, 1);
@@ -220,7 +220,7 @@ router.put('/unfollow/:id', auth, async (req, res) => {
 router.get('/:user_id', async (req, res) => {
   try {
     const posts = await Post.find({ user: req.params.user_id }).sort({
-      date: -1
+      date: -1,
     });
 
     res.json(posts);
@@ -232,7 +232,7 @@ router.get('/:user_id', async (req, res) => {
     res.status(500).send('Server Error');
   }
   const posts = await Post.find({ user: req.params.user_id }).sort({
-    date: -1
+    date: -1,
   });
 });
 
