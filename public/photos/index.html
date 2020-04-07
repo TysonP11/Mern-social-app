@@ -83,16 +83,16 @@
           .get('https://maps.googleapis.com/maps/api/geocode/json', {
             params: {
               address: location,
-              key: 'AIzaSyAHLhAqzLF3Xr3AEaME4SMsE4UGtNjPEVk'
-            }
+              key: 'AIzaSyAHLhAqzLF3Xr3AEaME4SMsE4UGtNjPEVk',
+            },
           })
-          .then(function(response) {
+          .then(function (response) {
             const coords = response.data.results[0].geometry.location;
             const formattedAddress = response.data.results[0].formatted_address;
             console.log(formattedAddress);
             console.log(coords);
           })
-          .catch(function(err) {
+          .catch(function (err) {
             console.log(err);
           });
       }

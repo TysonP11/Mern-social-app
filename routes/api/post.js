@@ -2,7 +2,7 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const upload = require('../upload');
+const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif'];
 
 const Post = require('../../models/Post');
 const Users = require('../../models/Users');
@@ -12,14 +12,7 @@ const Profile = require('../../models/Profile');
 // @access      Private
 router.post(
   '/',
-  [
-    auth,
-    [
-      check('text', 'Text is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -27,16 +20,16 @@ router.post(
     }
 
     try {
-      const user = await (await Users.findById(req.user.id)).isSelected(
-        '-password'
-      );
+      const user = await Users.findById(req.user.id).select('-password');
 
       const newPost = new Post({
         text: req.body.text,
         name: user.name,
         avatar: user.avatar,
-        user: req.user.id
+        user: req.user.id,
       });
+
+      savePhoto(newPost, req.body.photo);
 
       const post = await newPost.save();
 
@@ -47,6 +40,15 @@ router.post(
     }
   }
 );
+
+function savePhoto(post, photoEncoded) {
+  if (photoEncoded == null) return;
+  const photo = JSON.parse(photoEncoded);
+  if (photo != null && imageMimeTypes.includes(photo.type)) {
+    post.photo = new Buffer.from(photo.data, 'base64');
+    post.photoType = photo.type;
+  }
+}
 
 // @route       GET api/post
 // @ desc       Get all posts
@@ -127,7 +129,8 @@ router.put('/like/:id', auth, async (req, res) => {
     }
 
     if (
-      post.likes.filter(like => like.user.toString() === req.user.id).length > 0
+      post.likes.filter((like) => like.user.toString() === req.user.id).length >
+      0
     ) {
       return res.status(400).json({ msg: 'Post has already been liked' });
     }
@@ -159,14 +162,14 @@ router.put('/unlike/:id', auth, async (req, res) => {
     }
 
     if (
-      post.likes.filter(like => like.user.toString() === req.user.id).length ===
-      0
+      post.likes.filter((like) => like.user.toString() === req.user.id)
+        .length === 0
     ) {
       return res.status(400).json({ msg: 'Post has not been liked' });
     }
 
     const removeIndex = post.likes
-      .map(like => like.user.toString())
+      .map((like) => like.user.toString())
       .indexOf(req.user.id);
 
     post.likes.splice(removeIndex, 1);
@@ -188,14 +191,7 @@ router.put('/unlike/:id', auth, async (req, res) => {
 // @access      Private
 router.put(
   '/comment/:id',
-  [
-    auth,
-    [
-      check('text', 'Text is required')
-        .not()
-        .isEmpty()
-    ]
-  ],
+  [auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -204,15 +200,13 @@ router.put(
 
     try {
       const post = await Post.findById(req.params.id);
-      const user = await (await Users.findById(req.user.id)).isSelected(
-        '-password'
-      );
+      const user = await Users.findById(req.user.id).select('-password');
 
       const newComment = {
         text: req.body.text,
         name: user.user,
         avatar: user.avatar,
-        user: req.user.id
+        user: req.user.id,
       };
 
       post.comments.unshift(newComment);
@@ -241,7 +235,7 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
 
     // Pull out comment
     const comment = post.comments.find(
-      comment => comment.id === req.params.comment_id
+      (comment) => comment.id === req.params.comment_id
     );
     if (!comment) {
       return res.status(404).json({ msg: 'Comment does not exist.' });
@@ -253,7 +247,7 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
     }
 
     const removeIndex = post.comments
-      .map(comment => comment.id.toString())
+      .map((comment) => comment.id.toString())
       .indexOf(req.params.comment_id);
 
     post.comments.splice(removeIndex, 1);
@@ -270,32 +264,33 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
   }
 });
 
-// @route       PUT /api/post/photo
-// @ desc       post a photo
-// @access      Private
-router.post('/photo/:id', auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
-    upload(req, res, error => {
-      if (error) {
-        res.status(500).send('Server Error');
-      } else {
-        if (req.file == undefined) {
-          res.status(404).json({ msg: 'Photo not Found' });
-        } else {
-          const fullPath = 'photos/' + req.file.filename;
+// // @route       POST /api/post/photo/:id
+// // @ desc       post a photo
+// // @access      Private
+// router.post('/photo/:id', auth, async (req, res) => {
+//   try {
+//     const post = await Post.findById(req.params.id);
 
-          post.photo = fullPath;
-        }
-      }
-    });
-    await post.save();
+//     upload(req, res, (error) => {
+//       if (error) {
+//         res.status(500).send('Server Error');
+//       } else {
+//         if (req.file == undefined) {
+//           res.status(404).json({ msg: 'Photo not Found' });
+//         } else {
+//           const fullPath = 'photos/' + req.file.filename;
 
-    res.json(post);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
+//           post.photo = fullPath;
+//         }
+//       }
+//     });
+//     await post.save();
+
+//     res.json(post);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 module.exports = router;

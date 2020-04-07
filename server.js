@@ -7,8 +7,11 @@ const PORT = 5000 || process.env.port;
 
 connectDB();
 
+const bodyparser = require('body-parser');
+app.use(bodyparser.urlencoded({ limit: '10MB', extended: false }));
+app.use(express.urlencoded({ extended: false }));
 // Init Middleware
-app.use(express.json({ extended: false }));
+//app.use(express.json({ extended: false }));
 
 app.get('/', (req, res) => {
   res.send('API running');
