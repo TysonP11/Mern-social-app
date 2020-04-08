@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const gravatar = require('gravatar');
+const gravatar = require('gravatar-url');
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const config = require('config');
@@ -14,14 +14,12 @@ const User = require('../../models/Users');
 router.post(
   '/',
   [
-    check('name', 'Name is required')
-      .not()
-      .isEmpty(),
+    check('name', 'Name is required').not().isEmpty(),
     check('email', 'Please include a valid email').isEmail(),
     check(
       'password',
       'Please enter a password with 8 or more characters'
-    ).isLength({ min: 8 })
+    ).isLength({ min: 8 }),
   ],
   async (req, res) => {
     const errors = validationResult(req);
@@ -41,17 +39,13 @@ router.post(
       }
 
       //Get user's gravatar
-      const avatar = gravatar.url(email, {
-        s: '200',
-        r: 'pg',
-        d: 'mm'
-      });
+      const avatar = gravatar(email, { size: 200 });
 
       user = new User({
         name,
         email,
         avatar,
-        password
+        password,
       });
 
       //ENcrypt password
@@ -65,8 +59,8 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id
-        }
+          id: user.id,
+        },
       };
 
       jwt.sign(

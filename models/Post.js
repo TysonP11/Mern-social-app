@@ -52,11 +52,12 @@ const PostSchema = new Schema({
   },
   photo: {
     type: Buffer,
-    required: true,
   },
   photoType: {
     type: String,
-    required: true,
+  },
+  address: {
+    type: String,
   },
 });
 

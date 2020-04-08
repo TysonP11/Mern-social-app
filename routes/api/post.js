@@ -27,9 +27,10 @@ router.post(
         name: user.name,
         avatar: user.avatar,
         user: req.user.id,
+        address: req.body.address,
       });
 
-      savePhoto(newPost, req.body.photo);
+      if (req.body.photo) savePhoto(newPost, req.body.photo);
 
       const post = await newPost.save();
 

@@ -41,7 +41,7 @@ export const Register = ({ setAlert, register, isAuthenticated }) => {
           <div className='form-group'>
             <input
               type='text'
-              placeholder='Name'
+              placeholder='Username'
               name='name'
               value={name}
               onChange={(e) => onChange(e)}

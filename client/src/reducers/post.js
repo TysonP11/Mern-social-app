@@ -33,6 +33,18 @@ export default function (state = initialState, action) {
         posts: [payload, ...state.posts],
         loading: false,
       };
+    case UPDATE_LIKES:
+      return {
+        ...state,
+        posts: state.posts.map((post) =>
+          post._id === payload.id ? { ...post, likes: payload.likes } : post
+        ),
+        post:
+          state.post !== null && state.post._id === payload.id
+            ? { ...state.post, likes: payload.likes }
+            : state.post,
+        loading: false,
+      };
     case CLEAR_POST:
       return {
         ...state,

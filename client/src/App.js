@@ -6,9 +6,12 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Alert from './components/layout/Alert';
 import Home from './components/Home/Home';
+import Post from './components/Post/Post';
 import Posts from './components/Posts/Posts';
 import PostForm from './components/Posts/PostForm';
 import Dashboard from './components/dashboard/Dashboard';
+import CreateProfile from './components/profile-forms/CreateProfile';
+import EditProfile from './components/profile-forms/EditProfile';
 import PrivateRoute from './components/routing/PrivateRoute';
 
 // Redux
@@ -40,9 +43,20 @@ const App = () => {
               <Route exact path='/register' component={Register} />
               <Route exact path='/login' component={Login} />
               <PrivateRoute exact path='/dashboard' component={Dashboard} />
+              <PrivateRoute
+                exact
+                path='/create-profile'
+                component={CreateProfile}
+              />
+              <PrivateRoute
+                exact
+                path='/edit-profile'
+                component={EditProfile}
+              />
               <PrivateRoute exact path='/home' component={Home} />
               <PrivateRoute exact path='/posts' component={Posts} />
               <PrivateRoute exact path='/add-post' component={PostForm} />
+              <PrivateRoute exact path='/post/:id' component={Post} />
             </Switch>
           </section>
         </Fragment>

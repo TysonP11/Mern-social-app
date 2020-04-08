@@ -41,11 +41,22 @@ router.post('/', auth, async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { bio, youtube, twitter, instagram, linkedin, facebook } = req.body;
+  const {
+    bio,
+    youtube,
+    twitter,
+    instagram,
+    linkedin,
+    facebook,
+    website,
+    phoneNumber,
+  } = req.body;
 
   const profileFields = {};
   profileFields.user = req.user.id;
   if (bio) profileFields.bio = bio;
+  if (website) profileFields.website = website;
+  if (phoneNumber) profileFields.phoneNumber = phoneNumber;
 
   // Build social object and add to profileFields
   profileFields.social = {};
