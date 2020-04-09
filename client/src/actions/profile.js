@@ -6,6 +6,7 @@ import {
   PROFILE_ERROR,
   CLEAR_PROFILE,
   UPDATE_PROFILE,
+  DELETE_ACCOUNT,
 } from './types';
 
 // Get current user's profile
@@ -27,8 +28,7 @@ export const getCurrentProfile = () => async (dispatch) => {
   }
 };
 
-// Create or Update Profile
-
+// Create or update profile
 export const createProfile = (formData, history, edit = false) => async (
   dispatch
 ) => {
@@ -42,7 +42,7 @@ export const createProfile = (formData, history, edit = false) => async (
     const res = await axios.post('/api/profile', formData, config);
 
     dispatch({
-      type: UPDATE_PROFILE,
+      type: GET_PROFILE,
       payload: res.data,
     });
 
@@ -62,5 +62,25 @@ export const createProfile = (formData, history, edit = false) => async (
       type: PROFILE_ERROR,
       payload: { msg: err.response.statusText, status: err.response.status },
     });
+  }
+};
+
+// Delete account & profile
+
+export const deleteAccount = () => async (dispatch) => {
+  if (window.confirm('Are you sure? This CANNOT be undone')) {
+    try {
+      await axios.delete(`/api/profile/`);
+
+      dispatch({ type: CLEAR_PROFILE });
+      dispatch({ type: DELETE_ACCOUNT });
+
+      dispatch(setAlert('Account Deleted', 'success'));
+    } catch (err) {
+      dispatch({
+        type: PROFILE_ERROR,
+        payload: { msg: err.response.statusText, status: err.response.status },
+      });
+    }
   }
 };

@@ -2,12 +2,17 @@ import React, { Fragment, useState, useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { createProfile, getCurrentProfile } from '../../actions/profile';
+import {
+  createProfile,
+  getCurrentProfile,
+  deleteAccount,
+} from '../../actions/profile';
 
 const EditProfile = ({
   profile: { profile, loading },
   createProfile,
   getCurrentProfile,
+  deleteAccount,
   history,
 }) => {
   const [formData, setFormData] = useState({
@@ -87,9 +92,7 @@ const EditProfile = ({
             </div>
 
             <div className='form__row'>
-              <label for='bio' className='form__label'>
-                Bio:
-              </label>
+              <label className='form__label'>Bio:</label>
               <textarea
                 placeholder='Let people know who you are.'
                 name='bio'
@@ -185,7 +188,15 @@ const EditProfile = ({
             <Link className='btn btn-light my-1' to='/dashboard'>
               Go Back
             </Link>
+            <button className='btn btn-danger' onClick={() => deleteAccount()}>
+              <i className='fas fa-user-minus'> Delete My Account </i>
+            </button>
           </form>
+          <div className='my-2'>
+            <button className='btn btn-danger' onClick={() => deleteAccount()}>
+              <i className='fas fa-user-minus'> Delete My Account </i>
+            </button>
+          </div>
         </div>
       </main>
     </Fragment>
@@ -196,12 +207,15 @@ EditProfile.propTypes = {
   createProfile: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   getCurrentProfile: PropTypes.func.isRequired,
+  deleteAccount: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   profile: state.profile,
 });
 
-export default connect(mapStateToProps, { createProfile, getCurrentProfile })(
-  withRouter(EditProfile)
-);
+export default connect(mapStateToProps, {
+  createProfile,
+  getCurrentProfile,
+  deleteAccount,
+})(withRouter(EditProfile));
