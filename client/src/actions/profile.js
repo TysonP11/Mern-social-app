@@ -7,6 +7,8 @@ import {
   CLEAR_PROFILE,
   UPDATE_PROFILE,
   DELETE_ACCOUNT,
+  GET_PROFILES,
+  UPDATE_FOLLOW,
 } from './types';
 
 // Get current user's profile
@@ -82,5 +84,86 @@ export const deleteAccount = () => async (dispatch) => {
         payload: { msg: err.response.statusText, status: err.response.status },
       });
     }
+  }
+};
+
+// Get all Profiles
+export const getProfiles = () => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+
+  try {
+    const res = await axios.get('/api/profile/');
+
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Get profile by userID
+
+export const getProfileById = (userID) => async (dispatch) => {
+  try {
+    const res = await axios.get(`/api/profile/user/${userID}`);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Follow
+export const follow = (id) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/profile/follow/${id}`);
+
+    dispatch({
+      type: UPDATE_FOLLOW,
+      payload: {
+        followedId: id,
+        followingId: res.data.followingProfile._id,
+        followers: res.data.followedProfile.followers,
+        following: res.data.followingProfile.following,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// Unfollow
+export const unFollow = (id) => async (dispatch) => {
+  try {
+    const res = await axios.put(`/api/profile/unfollow/${id}`);
+
+    dispatch({
+      type: UPDATE_FOLLOW,
+      payload: {
+        followedId: id,
+        followingId: res.data.followingProfile._id,
+        followers: res.data.followedProfile.followers,
+        following: res.data.followingProfile.following,
+      },
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
   }
 };

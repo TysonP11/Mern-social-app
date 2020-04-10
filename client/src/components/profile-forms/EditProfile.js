@@ -7,6 +7,7 @@ import {
   getCurrentProfile,
   deleteAccount,
 } from '../../actions/profile';
+import Spinner from '../layout/Spinner';
 
 const EditProfile = ({
   profile: { profile, loading },
@@ -29,18 +30,19 @@ const EditProfile = ({
   const [displaySocialInputs, toggleSocialInputs] = useState(false);
 
   useEffect(() => {
-    getCurrentProfile();
-
-    setFormData({
-      website: loading || !profile.website ? '' : profile.website,
-      phoneNumber: loading || !profile.phoneNumber ? '' : profile.phoneNumber,
-      bio: loading || !profile.bio ? '' : profile.bio,
-      twitter: loading || !profile.social ? '' : profile.social.twitter,
-      facebook: loading || !profile.social ? '' : profile.social.facebook,
-      linkedin: loading || !profile.social ? '' : profile.social.linkedin,
-      youtube: loading || !profile.social ? '' : profile.social.youtube,
-      instagram: loading || !profile.social ? '' : profile.social.instagram,
-    });
+    if (!profile) getCurrentProfile();
+    if (profile) {
+      setFormData({
+        website: loading || !profile.website ? '' : profile.website,
+        phoneNumber: loading || !profile.phoneNumber ? '' : profile.phoneNumber,
+        bio: loading || !profile.bio ? '' : profile.bio,
+        twitter: loading || !profile.social ? '' : profile.social.twitter,
+        facebook: loading || !profile.social ? '' : profile.social.facebook,
+        linkedin: loading || !profile.social ? '' : profile.social.linkedin,
+        youtube: loading || !profile.social ? '' : profile.social.youtube,
+        instagram: loading || !profile.social ? '' : profile.social.instagram,
+      });
+    }
   }, [loading, getCurrentProfile]);
 
   const {
@@ -62,7 +64,9 @@ const EditProfile = ({
     createProfile(formData, history, true);
   };
 
-  return (
+  return profile === null || loading ? (
+    <Spinner></Spinner>
+  ) : (
     <Fragment>
       <h1 className='large text-primary'>Create Your Profile</h1>
       <p className='lead'>
@@ -192,11 +196,6 @@ const EditProfile = ({
               <i className='fas fa-user-minus'> Delete My Account </i>
             </button>
           </form>
-          <div className='my-2'>
-            <button className='btn btn-danger' onClick={() => deleteAccount()}>
-              <i className='fas fa-user-minus'> Delete My Account </i>
-            </button>
-          </div>
         </div>
       </main>
     </Fragment>

@@ -408,7 +408,7 @@ button {
 }
 
 .profile-top img {
-  width: 250px;
+  width: 150px;
 }
 
 .profile-top .icons a {
@@ -533,6 +533,8 @@ button {
   justify-content: space-between;
   max-width: 936px;
   width: 100%;
+  align-items: center;
+  align-content: center;
 }
 
 .posts__photos .posts__photo {

@@ -101,6 +101,41 @@ router.get('/', async (req, res) => {
   }
 });
 
+// @route       GET api/followedprofile
+// @ desc       Get all followed profile
+// @access      Public
+router.get('/followedprofile', auth, async (req, res) => {
+  try {
+    const profile = await Profile.findOne({
+      user: req.user.id,
+    }).populate('user', ['name', 'avatar']);
+
+    const following = profile.following;
+
+    const profiles = [];
+
+    async function asyncForEach(array, callback) {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    }
+    const start = async () => {
+      await asyncForEach(following, async (element) => {
+        let f = await Profile.findOne({
+          user: element.user,
+        }).populate('user', ['name', 'avatar']);
+
+        profiles.unshift(f);
+      });
+      res.json(profiles);
+    };
+    start();
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // @route       GET api/profile/user/:user_id
 // @ desc       Get profile by user id
 // @access      Public
@@ -161,7 +196,7 @@ router.put('/follow/:id', auth, async (req, res) => {
 
     followedProfile.followers.unshift({ user: req.user.id });
 
-    followingProfile.following.unshift({ user: req.params.id });
+    followingProfile.following.unshift({ user: followedProfile.user._id });
 
     await followingProfile.save();
     await followedProfile.save();
@@ -205,9 +240,11 @@ router.put('/unfollow/:id', auth, async (req, res) => {
 
     followedProfile.followers.splice(removeFollowerIndex, 1);
 
+    const followedUserId = followedProfile.user._id;
+
     const removeFollowedIndex = followingProfile.following
-      .map((following) => following.user.toString())
-      .indexOf(req.user.id);
+      .map((following) => following.user)
+      .indexOf(followedUserId);
 
     followingProfile.following.splice(removeFollowedIndex, 1);
 

@@ -3,8 +3,9 @@ import { Link, withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createProfile } from '../../actions/profile';
+import Spinner from '../layout/Spinner';
 
-const CreateProfile = ({ auth: { user }, createProfile, history }) => {
+const CreateProfile = ({ auth: { user, loading }, createProfile, history }) => {
   const [formData, setFormData] = useState({
     bio: '',
     youtube: '',
@@ -37,7 +38,9 @@ const CreateProfile = ({ auth: { user }, createProfile, history }) => {
     createProfile(formData, history);
   };
 
-  return (
+  return loading ? (
+    <Spinner></Spinner>
+  ) : (
     <Fragment>
       <h1 className='large text-primary'>Create Your Profile</h1>
       <p className='lead'>
@@ -162,9 +165,6 @@ const CreateProfile = ({ auth: { user }, createProfile, history }) => {
               </Fragment>
             )}
             <input type='submit' className='btn btn-primary my-1' />
-            <Link className='btn btn-light my-1' to='/dashboard'>
-              Go Back
-            </Link>
           </form>
         </div>
       </main>

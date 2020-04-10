@@ -31,6 +31,25 @@ export const getPosts = () => async (dispatch) => {
   }
 };
 
+// GET posts by userId
+
+export const getPostsById = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: CLEAR_POST });
+    const res = await axios.get(`/api/post/user/${id}`);
+
+    dispatch({
+      type: GET_POSTS,
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: POST_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
 // Add post
 export const addPost = (formData, history) => async (dispatch) => {
   const config = {
