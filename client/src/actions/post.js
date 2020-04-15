@@ -10,7 +10,6 @@ import {
   CLEAR_POST,
   ADD_COMMENT,
   REMOVE_COMMENT,
-  CLEAR_POSTS,
   LESS_POSTS,
   MORE_POSTS,
 } from './types';

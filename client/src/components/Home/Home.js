@@ -10,7 +10,7 @@ const Home = ({ post: { posts, loading } }) => {
     links.forEach((link, index) => {
       const coords = { lat: link.lat, lng: link.lng };
 
-      const marker = new window.google.maps.Marker({
+      new window.google.maps.Marker({
         map,
         position: coords,
         label: `${index + 1}`,
