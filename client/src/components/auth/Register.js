@@ -91,7 +91,7 @@ export const Register = ({ setAlert, register, user }) => {
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
+  user: PropTypes.object,
 };
 
 const mapStatetoProps = (state) => ({

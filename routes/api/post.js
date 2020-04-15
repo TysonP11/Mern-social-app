@@ -7,6 +7,7 @@ const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif'];
 const Post = require('../../models/Post');
 const Users = require('../../models/Users');
 const Profile = require('../../models/Profile');
+
 // @route       POST api/post
 // @ desc       Create a Post
 // @access      Private
@@ -28,6 +29,8 @@ router.post(
         avatar: user.avatar,
         user: req.user.id,
         address: req.body.address,
+        lat: req.body.lat,
+        lng: req.body.lng,
       });
 
       if (req.body.photo) savePhoto(newPost, req.body.photo);
@@ -42,14 +45,18 @@ router.post(
   }
 );
 
-function savePhoto(post, photoEncoded) {
-  if (photoEncoded == null) return;
-  const photo = JSON.parse(photoEncoded);
-  if (photo != null && imageMimeTypes.includes(photo.type)) {
-    post.photo = new Buffer.from(photo.data, 'base64');
-    post.photoType = photo.type;
-  }
-}
+// var platform = new window.H.service.Platform({
+//   apikey: '5p2ZKQVCUNnZt9kBR4wDC0Encjv7w8k5ZBm4vzS_8zw',
+// });
+
+// function savePhoto(post, photoEncoded) {
+//   if (photoEncoded == null) return;
+//   const photo = JSON.parse(photoEncoded);
+//   if (photo != null && imageMimeTypes.includes(photo.type)) {
+//     post.photo = new Buffer.from(photo.data, 'base64');
+//     post.photoType = photo.type;
+//   }
+// }
 
 // @route       GET api/post
 // @ desc       Get all posts
@@ -220,7 +227,7 @@ router.put(
 
       const newComment = {
         text: req.body.text,
-        name: user.user,
+        name: user.name,
         avatar: user.avatar,
         user: req.user.id,
       };
@@ -280,33 +287,33 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
   }
 });
 
-// // @route       POST /api/post/photo/:id
-// // @ desc       post a photo
-// // @access      Private
-// router.post('/photo/:id', auth, async (req, res) => {
-//   try {
-//     const post = await Post.findById(req.params.id);
+// @route       POST /api/post/photo/:id
+// @ desc       post a photo
+// @access      Private
+router.post('/photo/:id', auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
 
-//     upload(req, res, (error) => {
-//       if (error) {
-//         res.status(500).send('Server Error');
-//       } else {
-//         if (req.file == undefined) {
-//           res.status(404).json({ msg: 'Photo not Found' });
-//         } else {
-//           const fullPath = 'photos/' + req.file.filename;
+    upload(req, res, (error) => {
+      if (error) {
+        res.status(500).send('Server Error');
+      } else {
+        if (req.file == undefined) {
+          res.status(404).json({ msg: 'Photo not Found' });
+        } else {
+          const fullPath = 'photos/' + req.file.filename;
 
-//           post.photo = fullPath;
-//         }
-//       }
-//     });
-//     await post.save();
+          post.photo = fullPath;
+        }
+      }
+    });
+    await post.save();
 
-//     res.json(post);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server Error');
-//   }
-// });
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
 module.exports = router;

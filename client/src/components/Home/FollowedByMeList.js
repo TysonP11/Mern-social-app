@@ -1,38 +1,37 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
+import Spinner from '../layout/Spinner';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import Spinner from '../layout/Spinner';
-import ProfileItem from './ProfileItem';
-import { getProfiles } from '../../actions/profile';
+import { getFollowedProfiles } from '../../actions/profile';
+import ProfileItem from '../profiles/ProfileItem';
 
-const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
+const FollowedByMeList = ({
+  profile: { profiles, loading },
+  getFollowedProfiles,
+}) => {
   useEffect(() => {
-    getProfiles();
-  }, [getProfiles]);
+    getFollowedProfiles();
+  }, [getFollowedProfiles]);
 
   return (
     <Fragment>
-      {loading ? (
+      {profiles === null || loading ? (
         <Spinner />
       ) : (
         <Fragment>
           <div>
-            <h1 className='large text-primary'>Foodies</h1>
-            <p className='lead'>
-              <i className='fab fa-connectdevelop'></i> Browse and Follow these
-              Floggers.
-            </p>
+            <p className='lead'>Click on profile to see their post</p>
           </div>
 
           <div className='profiles'>
-            {loading ? (
+            {profiles === null || loading ? (
               <Spinner />
             ) : profiles.length > 0 ? (
               profiles.map((profile) => (
                 <ProfileItem
                   key={profile._id}
                   profile={profile}
-                  showPosts={false}
+                  showActions={false}
                 />
               ))
             ) : (
@@ -44,13 +43,16 @@ const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
     </Fragment>
   );
 };
-Profiles.propTypes = {
-  getProfiles: PropTypes.func.isRequired,
+
+FollowedByMeList.propTypes = {
   profile: PropTypes.object.isRequired,
+  getFollowedProfiles: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   profile: state.profile,
 });
 
-export default connect(mapStateToProps, { getProfiles })(Profiles);
+export default connect(mapStateToProps, { getFollowedProfiles })(
+  FollowedByMeList
+);

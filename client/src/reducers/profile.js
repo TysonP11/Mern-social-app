@@ -39,6 +39,10 @@ export default function (state = initialState, action) {
             ? { ...profile, followers: payload.followers }
             : profile
         ),
+        profile:
+          state.profile !== null && state.profile._id === payload.followedId
+            ? { ...state.profile, followers: payload.followers }
+            : state.profile,
         loading: false,
       };
     case PROFILE_ERROR:

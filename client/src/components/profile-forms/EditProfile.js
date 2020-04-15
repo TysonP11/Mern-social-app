@@ -43,7 +43,7 @@ const EditProfile = ({
         instagram: loading || !profile.social ? '' : profile.social.instagram,
       });
     }
-  }, [loading, getCurrentProfile]);
+  }, [loading, getCurrentProfile, profile]);
 
   const {
     bio,
@@ -78,7 +78,11 @@ const EditProfile = ({
         <div className='edit-profile__container'>
           <header className='edit-profile__header'>
             <div className='edit-profile__avatar-container'>
-              <img src={profile.user.avatar} className='edit-profile__avatar' />
+              <img
+                src={profile.user.avatar}
+                className='edit-profile__avatar'
+                alt='profile_pic'
+              />
             </div>
             <h4 className='edit-profile__username'>{profile.user.name}</h4>
           </header>

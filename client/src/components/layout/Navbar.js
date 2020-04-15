@@ -20,7 +20,7 @@ export const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
       </li>
       <li>
         <Link to='/posts'>
-          <i className='fas fa-hamburger'></i>
+          <i className='fas fa-hamburger'></i>{' '}
           <span className='hide-sm'>Recommendations</span>
         </Link>
       </li>

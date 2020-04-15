@@ -5,10 +5,10 @@ import {
   GET_PROFILE,
   PROFILE_ERROR,
   CLEAR_PROFILE,
-  UPDATE_PROFILE,
   DELETE_ACCOUNT,
   GET_PROFILES,
   UPDATE_FOLLOW,
+  CLEAR_POSTS,
 } from './types';
 
 // Get current user's profile
@@ -159,6 +159,26 @@ export const unFollow = (id) => async (dispatch) => {
         followers: res.data.followedProfile.followers,
         following: res.data.followingProfile.following,
       },
+    });
+  } catch (err) {
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status },
+    });
+  }
+};
+
+// GET all followed profile
+export const getFollowedProfiles = () => async (dispatch) => {
+  dispatch({ type: CLEAR_PROFILE });
+  dispatch({ type: CLEAR_POSTS });
+
+  try {
+    const res = await axios.get('/api/profile/followedprofile');
+
+    dispatch({
+      type: GET_PROFILES,
+      payload: res.data,
     });
   } catch (err) {
     dispatch({

@@ -1,17 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+import { follow, unFollow } from '../../actions/profile';
+import { connect } from 'react-redux';
 
 const ProfileTop = ({
   profile: {
     website,
     social,
     user: { name, avatar },
+    _id,
+    followers,
   },
+  auth,
+  already,
+  unFollow,
+  follow,
 }) => {
   return (
     <div className='profile-top bg-primary p-2'>
       <img className='round-img my-1' src={avatar} alt='' />
-      <h1>{name}</h1>
+      <span>{name} </span>
+      <span>
+        {!auth.loading &&
+          followers.map((follower) =>
+            follower.user === auth.user._id ? (already = true) : already
+          )}
+        {!already ? (
+          <button
+            onClick={(e) => follow(_id)}
+            type='button'
+            className='btn btn-light'
+          >
+            <i className='fas fa-thumbs-up'> </i>
+            Follow
+          </button>
+        ) : (
+          <button
+            onClick={(e) => unFollow(_id)}
+            type='button'
+            className='btn btn-light'
+          >
+            <i className='fas fa-thumbs-down'></i>
+            Unfollow
+          </button>
+        )}
+      </span>
       <div className='icons my-1'>
         {website && (
           <a href={website} target='_blank' rel='noopener noreferrer'>
@@ -36,9 +70,9 @@ const ProfileTop = ({
           </a>
         )}
         {social && social.youtube && (
-          <a href={social.youtube} target='_blank' rel='noopener noreferrer'>
+          <Link to={social.youtube} target='_blank' rel='noopener noreferrer'>
             <i className='fab fa-youtube fa-2x' />
-          </a>
+          </Link>
         )}
         {social && social.instagram && (
           <a href={social.instagram} target='_blank' rel='noopener noreferrer'>
@@ -50,8 +84,15 @@ const ProfileTop = ({
   );
 };
 
-ProfileTop.propTypes = {
-  profile: PropTypes.object.isRequired,
+ProfileTop.defaultProps = {
+  already: false,
 };
 
-export default ProfileTop;
+ProfileTop.propTypes = {
+  profile: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  follow: PropTypes.func.isRequired,
+  unFollow: PropTypes.func.isRequired,
+};
+
+export default connect(null, { follow, unFollow })(ProfileTop);

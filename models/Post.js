@@ -51,22 +51,18 @@ const PostSchema = new Schema({
     default: Date.now,
   },
   photo: {
-    type: Buffer,
-  },
-  photoType: {
     type: String,
   },
   address: {
     type: String,
   },
-});
 
-PostSchema.virtual('photoPath').get(function () {
-  if (this.photo != null && this.photoType != null) {
-    return `data:${this.photoType};charset=utf-8;base64,${this.photo.toString(
-      'base64'
-    )}`;
-  }
+  lat: {
+    type: Number,
+  },
+  lng: {
+    type: Number,
+  },
 });
 
 module.exports = Post = mongoose.model('post', PostSchema);

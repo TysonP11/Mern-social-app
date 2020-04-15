@@ -2,18 +2,16 @@ import React, { useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { addPost } from '../../actions/post';
-import { Redirect } from 'react-router-dom';
 
 const PostForm = ({ addPost, history }) => {
   const [formData, setFormData] = useState({
     text: '',
     address: '',
+    lat: 10,
+    lng: 10,
   });
 
   const { text, address } = formData;
-
-  const onChange = (e) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const onSubmit = (e) => {
     e.preventDefault(e);
@@ -33,7 +31,9 @@ const PostForm = ({ addPost, history }) => {
               name='address'
               value={address}
               placeholder='Address'
-              onChange={(e) => onChange(e)}
+              onChange={(e) =>
+                setFormData({ ...formData, address: e.target.value })
+              }
             ></input>
           </div>
 
@@ -43,7 +43,7 @@ const PostForm = ({ addPost, history }) => {
             rows='5'
             placeholder='Say something'
             value={text}
-            onChange={(e) => onChange(e)}
+            onChange={(e) => setFormData({ ...formData, text: e.target.value })}
             required
           ></textarea>
           <input type='submit' className='btn btn-dark my-1' value='Submit' />

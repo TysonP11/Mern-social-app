@@ -6,8 +6,11 @@ import {
   ADD_POST,
   GET_POST,
   CLEAR_POST,
+  CLEAR_POSTS,
   ADD_COMMENT,
   REMOVE_COMMENT,
+  MORE_POSTS,
+  LESS_POSTS,
 } from '../actions/types';
 
 const initialState = {
@@ -27,10 +30,30 @@ export default function (state = initialState, action) {
         posts: payload,
         loading: false,
       };
+    case GET_POST:
+      return {
+        ...state,
+        post: payload,
+        loading: false,
+      };
     case ADD_POST:
       return {
         ...state,
         posts: [payload, ...state.posts],
+        loading: false,
+      };
+    case MORE_POSTS:
+      return {
+        ...state,
+        posts: [...payload, ...state.posts],
+        loading: false,
+      };
+    case LESS_POSTS:
+      return {
+        ...state,
+        posts: state.posts.filter((post) => {
+          return !payload.includes(post._id);
+        }),
         loading: false,
       };
     case UPDATE_LIKES:
@@ -45,12 +68,42 @@ export default function (state = initialState, action) {
             : state.post,
         loading: false,
       };
+    case ADD_COMMENT:
+      return {
+        ...state,
+        post: { ...state.post, comments: payload },
+        loading: false,
+      };
+    case REMOVE_COMMENT:
+      return {
+        ...state,
+        post: {
+          ...state.post,
+          comments: state.post.comments.filter(
+            (comment) => comment._id !== payload
+          ),
+        },
+        loading: false,
+      };
     case CLEAR_POST:
       return {
         ...state,
         post: null,
         loading: false,
       };
+    case CLEAR_POSTS:
+      return {
+        ...state,
+        posts: [],
+        loading: false,
+      };
+    case DELETE_POST:
+      return {
+        ...state,
+        posts: state.posts.filter((post) => post._id !== payload),
+        loading: false,
+      };
+
     case POST_ERROR:
       return {
         ...state,

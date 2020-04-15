@@ -24,7 +24,7 @@ const Profile = ({
 
   return (
     <Fragment>
-      {profile === null || loading ? (
+      {profile === null || posts === null || loading ? (
         <Spinner />
       ) : (
         <Fragment>
@@ -39,7 +39,7 @@ const Profile = ({
               </Link>
             )}
           <div className='profile-grid my-1'>
-            <ProfileTop profile={profile} />
+            <ProfileTop profile={profile} auth={auth} />
             <ProfileAbout profile={profile} />
           </div>
           <ProfilePosts posts={posts} />

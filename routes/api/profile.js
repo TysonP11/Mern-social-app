@@ -279,9 +279,6 @@ router.get('/:user_id', async (req, res) => {
     }
     res.status(500).send('Server Error');
   }
-  const posts = await Post.find({ user: req.params.user_id }).sort({
-    date: -1,
-  });
 });
 
 module.exports = router;

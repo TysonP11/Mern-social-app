@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { createProfile } from '../../actions/profile';
@@ -52,7 +52,7 @@ const CreateProfile = ({ auth: { user, loading }, createProfile, history }) => {
         <div className='edit-profile__container'>
           <header className='edit-profile__header'>
             <div className='edit-profile__avatar-container'>
-              <img src={user.avatar} className='edit-profile__avatar' />
+              <img src={user.avatar} alt='' className='edit-profile__avatar' />
             </div>
             <h4 className='edit-profile__username'>{user.name}</h4>
           </header>
@@ -70,9 +70,7 @@ const CreateProfile = ({ auth: { user, loading }, createProfile, history }) => {
             </div>
 
             <div className='form__row'>
-              <label for='bio' className='form__label'>
-                Bio:
-              </label>
+              <label className='form__label'>Bio:</label>
               <textarea
                 placeholder='Let people know who you are.'
                 name='bio'
