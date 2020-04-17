@@ -27,7 +27,7 @@ export const Register = ({ setAlert, register, user }) => {
     }
   };
 
-  if (user) {
+  if (user && user.isAuthenticated) {
     return <Redirect to='/create-profile' />;
   }
   return (
