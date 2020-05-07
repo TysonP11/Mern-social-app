@@ -2,11 +2,19 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const imageMimeTypes = ['image/jpeg', 'image/png', 'images/gif'];
+// const upload = require('../../middleware/fileUpload')
 
 const Post = require('../../models/Post');
 const Users = require('../../models/Users');
-const Profile = require('../../models/Profile');
+
+// router.post('/uploadImage', (req, res) => {
+//   upload(req, res, err => {
+//       if (err) {
+//           return res.json({ success: false, err })
+//       }
+//       return res.json({ success: true, image: res.req.file.path, fileName: res.req.file.filename })
+//   })
+// })
 
 // @route       POST api/post
 // @ desc       Create a Post
@@ -31,11 +39,10 @@ router.post(
         address: req.body.address,
         lat: req.body.lat,
         lng: req.body.lng,
+        photo: req.body.photo
       });
 
-      if (req.body.photo) savePhoto(newPost, req.body.photo);
-
-      const post = await newPost.save();
+      const post = await newPost.save()
 
       res.json(post);
     } catch (err) {
@@ -290,30 +297,30 @@ router.delete('/delcomment/:id/:comment_id', auth, async (req, res) => {
 // @route       POST /api/post/photo/:id
 // @ desc       post a photo
 // @access      Private
-router.post('/photo/:id', auth, async (req, res) => {
-  try {
-    const post = await Post.findById(req.params.id);
+// router.post('/photo/:id', auth, async (req, res) => {
+//   try {
+//     const post = await Post.findById(req.params.id);
 
-    upload(req, res, (error) => {
-      if (error) {
-        res.status(500).send('Server Error');
-      } else {
-        if (req.file == undefined) {
-          res.status(404).json({ msg: 'Photo not Found' });
-        } else {
-          const fullPath = 'photos/' + req.file.filename;
+//     upload(req, res, (error) => {
+//       if (error) {
+//         res.status(500).send('Server Error');
+//       } else {
+//         if (req.file == undefined) {
+//           res.status(404).json({ msg: 'Photo not Found' });
+//         } else {
+//           const fullPath = 'photos/' + req.file.filename;
 
-          post.photo = fullPath;
-        }
-      }
-    });
-    await post.save();
+//           post.photo = fullPath;
+//         }
+//       }
+//     });
+//     await post.save();
 
-    res.json(post);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
+//     res.json(post);
+//   } catch (err) {
+//     console.error(err.message);
+//     res.status(500).send('Server Error');
+//   }
+// });
 
 module.exports = router;

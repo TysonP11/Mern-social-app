@@ -158,12 +158,13 @@ export const addPost = (formData, history) => async (dispatch) => {
 
     dispatch(setAlert('Post Created', 'success'));
 
-    history.push('posts');
+    history.push('/posts');
   } catch (err) {
-    dispatch({
-      type: POST_ERROR,
-      payload: { msg: err.response.statusText, status: err.response.status },
-    });
+    // dispatch({
+    //   type: POST_ERROR,
+    //   payload: { msg: err.response.statusText, status: err.response.status },
+    // });
+    console.log(err)
   }
 };
 
