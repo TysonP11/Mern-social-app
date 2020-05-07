@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server",
-    "server": "nodemon server",
+    "server": "nodemon server.js",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
@@ -14,35 +14,25 @@
   "dependencies": {
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "config": "^3.3.1",
     "express": "^4.17.1",
-    "express-fileupload": "^1.1.7-alpha.2",
     "express-validator": "^6.4.0",
-    "filepond": "^4.13.0",
     "gravatar": "^1.8.0",
     "gravatar-url": "^3.1.0",
-    "gridfs-stream": "^1.1.1",
     "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
-    "moment": "^2.24.0",
     "mongoose": "^5.9.6",
     "multer": "^1.4.2",
-    "multer-gridfs-storage": "^4.0.2",
     "normalize-url": "^5.0.0",
-    "passport": "^0.4.1",
-    "passport-google-oauth20": "^2.0.0",
-    "react-filepond": "^7.0.1",
     "react-moment": "^0.9.7",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
     "redux": "^4.0.5",
-    "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "concurrently": "^5.1.0",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.3"
   }
 }

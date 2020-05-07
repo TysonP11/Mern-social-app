@@ -1,14 +1,21 @@
 const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-const { check, validationResult } = require('express-validator');
-const normalize = require('normalize-url');
-const request = require('request');
-const config = require('config');
+const { validationResult } = require('express-validator');
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/Users');
 const Post = require('../../models/Post');
+const upload = require('../../middleware/fileUpload')
+
+router.post('/uploadImage', (req, res) => {
+  upload(req, res, err => {
+      if (err) {
+          return res.json({ success: false, err })
+      }
+      return res.json({ success: true, image: res.req.file.path, fileName: res.req.file.filename })
+  })
+})
 
 // @route       GET api/profile/me
 // @ desc       Get current user profile
@@ -50,8 +57,9 @@ router.post('/', auth, async (req, res) => {
     facebook,
     website,
     phoneNumber,
+    avatar
   } = req.body;
-
+  
   const profileFields = {};
   profileFields.user = req.user.id;
   if (bio) profileFields.bio = bio;
@@ -67,8 +75,11 @@ router.post('/', auth, async (req, res) => {
   if (instagram) profileFields.social.instagram = instagram;
 
   try {
+    // const currentUser = await User.findOne({ user: req.user.id })
     let profile = await Profile.findOne({ user: req.user.id });
     if (profile) {
+      // await User.findOneAndUpdate({ id: req.user.id }, { avatar: avatar })
+      
       //Update
       profile = await Profile.findOneAndUpdate(
         { user: req.user.id },
@@ -77,6 +88,8 @@ router.post('/', auth, async (req, res) => {
       );
       return res.json(profile);
     }
+
+    await User.findOneAndUpdate({ _id: req.user.id }, { avatar: avatar.toString() })
 
     // Create
     profile = new Profile(profileFields);

@@ -51,7 +51,8 @@ const PostSchema = new Schema({
     default: Date.now,
   },
   photo: {
-    type: String,
+    type: Array,
+    default: []
   },
   address: {
     type: String,
