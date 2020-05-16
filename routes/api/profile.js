@@ -2,18 +2,31 @@ const express = require('express');
 const auth = require('../../middleware/auth');
 const router = express.Router();
 const { validationResult } = require('express-validator');
+const gravatar = require('gravatar')
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/Users');
 const Post = require('../../models/Post');
-const upload = require('../../middleware/fileUpload')
 
-router.post('/uploadImage', (req, res) => {
-  upload(req, res, err => {
-      if (err) {
-          return res.json({ success: false, err })
-      }
-      return res.json({ success: true, image: res.req.file.path, fileName: res.req.file.filename })
+// @route       POST api/profile/upload-image
+// @ desc       Post profile image
+// @access      Private
+router.post('/upload-image', auth, async (req, res) => {
+  if (req.files === null) {
+    return res.status(400).json({ msg: 'No image uploaded' })
+  }
+
+  const file = req.files.file
+
+  const fileName = `${Date.now()}-${file.name}`
+
+  file.mv(`./uploads/${fileName}`, err => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send(err.msg)
+    }
+
+    res.json({ fileName: fileName, filePath: `/uploads/${fileName}` })
   })
 })
 
@@ -77,19 +90,28 @@ router.post('/', auth, async (req, res) => {
   try {
     // const currentUser = await User.findOne({ user: req.user.id })
     let profile = await Profile.findOne({ user: req.user.id });
-    if (profile) {
-      // await User.findOneAndUpdate({ id: req.user.id }, { avatar: avatar })
-      
+    if (profile) { 
       //Update
       profile = await Profile.findOneAndUpdate(
         { user: req.user.id },
         { $set: profileFields },
         { new: true }
       );
+
+      let user = await User.findById(req.user.id)
+
+      console.log(user)
+
+      user = await User.findOneAndUpdate({ _id: req.user.id }, { avatar: avatar.toString() }, { new: true })
+
+      await user.save()
+
+      console.log(user + 'after')
+
       return res.json(profile);
     }
 
-    await User.findOneAndUpdate({ _id: req.user.id }, { avatar: avatar.toString() })
+    await User.findOneAndUpdate({ _id: req.user.id }, { avatar: avatar.toString() }, { new: true })
 
     // Create
     profile = new Profile(profileFields);

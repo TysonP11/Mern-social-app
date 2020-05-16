@@ -2,19 +2,31 @@ const express = require('express');
 const { check, validationResult } = require('express-validator');
 const auth = require('../../middleware/auth');
 const router = express.Router();
-// const upload = require('../../middleware/fileUpload')
 
 const Post = require('../../models/Post');
 const Users = require('../../models/Users');
 
-// router.post('/uploadImage', (req, res) => {
-//   upload(req, res, err => {
-//       if (err) {
-//           return res.json({ success: false, err })
-//       }
-//       return res.json({ success: true, image: res.req.file.path, fileName: res.req.file.filename })
-//   })
-// })
+// @route       POST api/post/upload-image
+// @ desc       Post a post image
+// @access      Private
+router.post('/upload-image', auth, (req, res) => {
+  if (req.files === null) {
+    return res.status(400).json({ msg: 'No file uploaded' })
+  }
+
+  const file = req.files.file
+
+  const fileName = `${Date.now()}-${file.name}`
+
+  file.mv(`./uploads/${fileName}`, err => {
+    if (err) {
+      console.error(err)
+      return res.status(500).send(err.msg)
+    }
+
+    res.json({ fileName: fileName, filePath: `/uploads/${fileName}` })
+  })
+})
 
 // @route       POST api/post
 // @ desc       Create a Post

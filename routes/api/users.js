@@ -7,6 +7,7 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 
 const User = require('../../models/Users');
+const auth = require('../../middleware/auth')
 
 // @route       POST api/users
 // @ desc       Register user
@@ -78,5 +79,18 @@ router.post(
     }
   }
 );
+
+// @route       GET api/users
+// @ desc       Get user information
+// @access      Private
+router.get('/', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    res.json(user)
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+})
 
 module.exports = router;

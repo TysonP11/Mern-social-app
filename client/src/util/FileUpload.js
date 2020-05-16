@@ -1,78 +1,62 @@
-import React, { useState } from "react"
-import axios from "axios"
-import Dropzone from "react-dropzone"
+import React, { useState } from 'react'
+import axios from 'axios'
+import Dropzone from 'react-dropzone'
 
-function FileUpload(props) {
-    const [Images, setImages] = useState([])
+const FileUpload = ({ refreshFunction }) => {
+    const [images, setImages] = useState([])
 
-    const onDrop = (files) => {
-        let formData = new FormData()
+    const onDrop = async (files) => {
+        const formData = new FormData()
+
+        formData.append('file', files[0])
+
         const config = {
-            header: { "content-type": "multipart/form-data" },
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
         }
-        formData.append("file", files[0])
-        //save the Image we chose inside the Node Server
-        axios
-            .post("/api/upload-image", formData, config)
-            .then((response) => {
-                console.log(response.data)
-                if (response.data.success) {
-                    setImages([...Images, response.data.image])
-                    props.refreshFunction([...Images, response.data.image])
-                } else {
-                    alert("Failed to save the Image in Server")
-                }
-            })
+        try {
+            const res = await axios.post(
+                '/api/profile/upload-image',
+                formData,
+                config
+            )
+            console.log(res)
+
+            setImages([...images, res.data.filePath])
+            refreshFunction([...images, res.data.filePath])
+        } catch (err) {
+            console.error(err)
+        }
     }
 
     const onDelete = (image) => {
-        const currentIndex = Images.indexOf(image)
+        const currentIndex = images.indexOf(image)
 
-        let newImages = [...Images]
+        let newImages = [...images]
         newImages.splice(currentIndex, 1)
 
         setImages(newImages)
-        props.refreshFunction(newImages)
+        refreshFunction(newImages)
     }
 
     return (
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Dropzone onDrop={onDrop} multiple={false} maxSize={800000000}>
-                {({ getRootProps, getInputProps }) => (
-                    <div
-                        style={{
-                            width: "300px",
-                            height: "240px",
-                            border: "1px solid lightgray",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                        {...getRootProps()}
-                    >
-                        <input {...getInputProps()} />
-                        <div
-                            
-                        >
-                            {Images.map((image, index) => (
-                                <div onClick={() => onDelete(image)}>
-                                    <img
-                                        style={{
-                                            minWidth: "300px",
-                                            width: "300px",
-                                            height: "240px",
-                                        }}
-                                        src={`http://localhost:5000/${image}`}
-                                        alt={`productImg-${index}`}
-                                    />
-                                </div>
-                            ))}
-                        </div>
+        <Dropzone onDrop={onDrop} multiple={false} maxSize={1000000000}>
+            {({ getRootProps, getInputProps }) => (
+                <div
+                    {...getRootProps()}
+                >
+                    <input {...getInputProps()} />
+                    <div>
+                        {images.map((image, index) => (
+                            <div onClick={() => onDelete(image)} key={index}>
+                            </div>
+                        ))}
                     </div>
-                )}
-            </Dropzone>
-        </div>
+                </div>
+            )}
+        </Dropzone>
     )
 }
 
-export default FileUpload
+export default (FileUpload)
