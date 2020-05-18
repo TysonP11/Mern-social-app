@@ -28,7 +28,7 @@ export const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
                 </Link>
             </li>
             <li>
-                <a onClick={logout} href='/register'>
+                <a onClick={logout} href='/'>
                     <i className='fas fa-sign-out-alt fa-2x'></i>
                 </a>
             </li>

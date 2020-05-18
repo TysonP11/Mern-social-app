@@ -19,6 +19,8 @@ const ProfileItem = ({
 }) => {
   const [showing, toggleShowing] = useState(false);
 
+  console.log(user)
+
   return (
     <div className='profile bg-light'>
       <Link to={`/profile/${user._id}`}>

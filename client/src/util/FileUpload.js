@@ -23,8 +23,8 @@ const FileUpload = ({ refreshFunction }) => {
             )
             console.log(res)
 
-            setImages([...images, res.data.filePath])
-            refreshFunction([...images, res.data.filePath])
+            setImages([res.data.filePath, ...images])
+            refreshFunction([res.data.filePath, ...images])
         } catch (err) {
             console.error(err)
         }

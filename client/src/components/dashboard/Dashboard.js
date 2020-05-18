@@ -9,7 +9,6 @@ const Dashboard = ({
   getCurrentProfile,
   auth: { user },
   profile: { profile, loading },
-  deleteAccount,
 }) => {
   useEffect(() => {
     getCurrentProfile();
@@ -18,7 +17,7 @@ const Dashboard = ({
   return loading && profile === null ? (
     <Spinner />
   ) : (
-    <Fragment>
+    <div className='dashboard'>
       <h1 className='large text-primary'>Dashboard</h1>
       <p className='lead'>
         <i className='fas fa-user'></i> Welcome {user && user.name}
@@ -29,8 +28,8 @@ const Dashboard = ({
             <Link to='/add-post' className='btn btn-primary'>
               Create a Review
             </Link>
-
-            <Link to='/edit-profile' className='btn btn-dark'>
+            {'  '}
+            <Link to='/edit-profile' className='btn btn-danger'>
               Edit Profile
             </Link>
           </div>
@@ -38,12 +37,12 @@ const Dashboard = ({
       ) : (
         <Fragment>
           <p>You have not yet set up your profile, please add some info</p>
-          <Link to='/create-profile' className='btn btn-primary my-1'>
+          <Link to='/create-profile' className='btn btn-primary'>
             Create Profile
           </Link>
         </Fragment>
       )}
-    </Fragment>
+    </div>
   );
 };
 Dashboard.propTypes = {

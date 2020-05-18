@@ -8,7 +8,8 @@ import {
     DELETE_ACCOUNT,
     GET_PROFILES,
     UPDATE_FOLLOW,
-    CLEAR_POSTS
+    CLEAR_POSTS,
+    CLEAR_PROFILES
 } from './types'
 
 // Get current user's profile
@@ -65,14 +66,14 @@ export const createProfile = (formData, history, edit = false) => async (
     } catch (err) {
         console.log(err)
 
-        //   if (errors) {
-        //     errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-        //   }
+    //       if (errors) {
+    //         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    //       }
 
-        //   dispatch({
-        //     type: PROFILE_ERROR,
-        //     payload: { msg: err.response.statusText, status: err.response.status },
-        //   });
+    //       dispatch({
+    //         type: PROFILE_ERROR,
+    //         payload: { msg: err.response.statusText, status: err.response.status },
+    //       });
     }
 }
 
@@ -195,8 +196,9 @@ export const unFollow = (id) => async (dispatch) => {
 // GET all followed profile
 export const getFollowedProfiles = () => async (dispatch) => {
     dispatch({ type: CLEAR_PROFILE })
+    dispatch({ type: CLEAR_PROFILES })
     dispatch({ type: CLEAR_POSTS })
-
+    
     try {
         const res = await axios.get('/api/profile/followedprofile')
 

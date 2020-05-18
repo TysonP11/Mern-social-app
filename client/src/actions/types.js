@@ -30,3 +30,6 @@ export const REMOVE_COMMENT = 'REMOVE_COMMENT';
 export const MORE_POSTS = 'MORE_POSTS';
 export const LESS_POSTS = 'LESS_POSTS';
 
+export const CLEAR_PROFILES = 'CLEAR_PROFILES';
+
+

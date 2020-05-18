@@ -10,9 +10,8 @@ export const Landing = ({ isAuthenticated }) => {
 
   return (
     <section className='landing'>
-      <div className='dark-overlay'>
         <div className='landing-inner'>
-          <h1 className='x-large'>Hapi</h1>
+          <h1 className='large'>Hapi</h1>
           <p className='lead'>
             Are you looking for a perfect restaurant for someone you need to
             impress? Look no further!
@@ -25,12 +24,12 @@ export const Landing = ({ isAuthenticated }) => {
             <Link to='/register' className='btn btn-primary'>
               Sign Up
             </Link>
-            <Link to='/login' className='btn btn-light'>
+            {'  '}
+            <Link to='/login' className='btn btn-danger'>
               Login
             </Link>
           </div>
         </div>
-      </div>
     </section>
   );
 };
