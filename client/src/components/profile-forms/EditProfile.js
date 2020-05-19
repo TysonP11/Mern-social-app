@@ -9,6 +9,7 @@ import {
 } from '../../actions/profile'
 import Spinner from '../layout/Spinner'
 import FileUpload from '../../util/FileUpload'
+import ChangePassword from '../auth/ChangePassword'
 
 const EditProfile = ({
     profile: { profile, loading },
@@ -91,6 +92,9 @@ const EditProfile = ({
     const tabItems = document.querySelectorAll('.tab-item')
     const tabContentItems = document.querySelectorAll('.tab-content-items')
 
+    const formHeader = document.querySelector('.form-header')
+    const formAction = document.querySelector('.form-action')
+
     // select tab content item
     function selectItem() {
         addHide()
@@ -99,9 +103,25 @@ const EditProfile = ({
         // add border to current tab
         this.classList.add('tab-border')
         // grab content item from DOM
+        if (this.id === 'tab-user-password') {
+            formHeader.classList.remove('show')
+            formHeader.classList.add('hide')
+            formAction.classList.remove('show')
+            formAction.classList.add('hide')
+        } else {
+            formHeader.classList.remove('hide')
+            formHeader.classList.add('show')
+            formAction.classList.remove('hide')
+            formAction.classList.add('show')
+        }
         const tabContentItem = document.querySelector(`#${this.id}-content`)
+
         // add show class
         tabContentItem.classList.add('show')
+
+        console.log(this.id)
+
+        
     }
 
     // remove border
@@ -147,27 +167,29 @@ const EditProfile = ({
                     </div>
                 </div>
                 <div className='container'>
-                    <header>
-                        {image === '' || image.length === 0 ? (
-                            <img
-                                src={profile.user.avatar}
-                                className='image-rounded image-large'
-                                alt={`${profile.user.name} avatar`}
-                            />
-                        ) : (
-                            <img
-                                src={image[0]}
-                                className='image-rounded image-large'
-                                alt={`${profile.user.name} avatar`}
-                            />
-                        )}
-                        <label>
-                            <FileUpload refreshFunction={uploadImage} />
-                            <i className='fas fa-edit' />
-                        </label>
-                        <h3 className='edit-profile__username'>
-                            {auth.user.name}
-                        </h3>
+                    <header className='form-header'>
+                        <div className='form-header-content'>
+                            {image === '' || image.length === 0 ? (
+                                <img
+                                    src={profile.user.avatar}
+                                    className='image-rounded image-large'
+                                    alt={`${profile.user.name} avatar`}
+                                />
+                            ) : (
+                                <img
+                                    src={image[0]}
+                                    className='image-rounded image-large'
+                                    alt={`${profile.user.name} avatar`}
+                                />
+                            )}
+                            <label>
+                                <FileUpload refreshFunction={uploadImage} />
+                                <i className='fas fa-edit' />
+                            </label>
+                            <h3 className='edit-profile__username'>
+                                {auth.user.name}
+                            </h3>
+                        </div>
                     </header>
                     <form
                         onSubmit={(e) => onSubmit(e)}
@@ -305,6 +327,14 @@ const EditProfile = ({
                             </Link>
                         </div>
                     </form>
+
+                    <div
+                        className='tab-content-items'
+                        id='tab-user-password-content'
+                    >
+                        <ChangePassword />
+                    </div>
+
                     <button
                         className='btn btn-danger'
                         onClick={() => {

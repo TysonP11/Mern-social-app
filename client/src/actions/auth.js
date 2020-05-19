@@ -9,6 +9,7 @@ import {
   LOGIN_SUCCESS,
   LOGOUT,
   CLEAR_PROFILE,
+  CHANGE_PASSWORD,
 } from './types';
 import setAuthToken from '../util/setAuthToken';
 
@@ -106,3 +107,29 @@ export const logout = () => (dispatch) => {
     type: LOGOUT,
   });
 };
+
+export const changePassword = (formData, history) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  const body = JSON.stringify(formData);
+  try {
+    const res = await axios.put('/api/users/change-password', body, config)
+
+    dispatch({
+      type: CHANGE_PASSWORD,
+      payload: res.data
+    })
+
+    history.push('/dashboard')
+  } catch (err) {
+    dispatch(setAlert(err.response.data.msg, 'danger'))
+    const errors = err.response.data.errors
+    if (errors) {
+      errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
+    }
+  }
+}

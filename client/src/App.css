@@ -142,22 +142,22 @@ input {
     min-height: 635px;
 }
 
-#edit-profile header {
+#edit-profile .form-header-content {
     display: flex;
     align-items: center;
 }
 
-#edit-profile header label {
+#edit-profile .form-header-content label {
     margin-left: 1rem;
 }
 
-#edit-profile header label:hover {
+#edit-profile .form-header-content label:hover {
     color: var(--dark-color);
     outline: none;
     cursor: pointer;
 }
 
-#edit-profile header h3 {
+#edit-profile .form-header-content h3 {
     margin-left: 1rem;
 }
 
@@ -217,7 +217,8 @@ input {
 }
 
 /* choose tab menu */
-#tab-social-infor-content {
+#tab-social-infor-content,
+#tab-user-password-content {
     display: none;
 }
 

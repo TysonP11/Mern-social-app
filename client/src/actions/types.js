@@ -32,4 +32,7 @@ export const LESS_POSTS = 'LESS_POSTS';
 
 export const CLEAR_PROFILES = 'CLEAR_PROFILES';
 
+export const CHANGE_PASSWORD = 'CHANGE_PASSWORD'
+
+
 
