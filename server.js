@@ -1,6 +1,6 @@
 const express = require('express');
 const connectDB = require('./config/db');
-const passportSetup = require('./config/passport');
+const passportSetup = require('./middleware/passport');
 const app = express();
 const config = require('./config/auth');
 const cookieSession = require('cookie-session');
