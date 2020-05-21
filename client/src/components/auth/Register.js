@@ -5,7 +5,7 @@ import { setAlert } from '../../actions/alert';
 import { register } from '../../actions/auth';
 import PropTypes from 'prop-types';
 
-export const Register = ({ setAlert, register, user }) => {
+export const Register = ({ setAlert, register, isAuthenticated }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,7 +27,7 @@ export const Register = ({ setAlert, register, user }) => {
     }
   };
 
-  if (user && user.isAuthenticated) {
+  if (isAuthenticated) {
     return <Redirect to='/create-profile' />;
   }
   return (
@@ -91,11 +91,11 @@ export const Register = ({ setAlert, register, user }) => {
 Register.propTypes = {
   setAlert: PropTypes.func.isRequired,
   register: PropTypes.func.isRequired,
-  user: PropTypes.object,
+  isAuthenticated: PropTypes.bool,
 };
 
 const mapStatetoProps = (state) => ({
-  user: state.auth.user,
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 export default connect(mapStatetoProps, { setAlert, register })(Register);
