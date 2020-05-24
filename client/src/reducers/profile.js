@@ -37,6 +37,8 @@ export default function (state = initialState, action) {
         profiles: state.profiles.map((profile) =>
           profile._id === payload.followedId
             ? { ...profile, followers: payload.followers }
+            : profile._id === payload.followingId
+            ? { ...profile, following: payload.following }
             : profile
         ),
         profile:

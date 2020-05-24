@@ -194,6 +194,15 @@ router.put('/follow/:id', auth, async (req, res) => {
         .json({ msg: 'You are already following this Profile' });
     }
 
+    if (
+      followedProfile.user._id.toString() ===
+      followingProfile.user._id.toString()
+    ) {
+      return res
+        .status(400)
+        .json({ msg: 'You cannot follow your own profile.' });
+    }
+
     followedProfile.followers.unshift({ user: req.user.id });
 
     followingProfile.following.unshift({ user: followedProfile.user._id });

@@ -12,17 +12,8 @@ const config = require('config');
 // @desc Login with Google
 // @access Public
 
-router.get(
-  '/',
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-  })
-);
-
-// @route GET api/auth/google/redirect
-// @desc callback route for google to redirect to
-// @access Public
-router.get('/redirect', passport.authenticate('google'), async (req, res) => {
+router.get('/', passport.authenticate('googleToken'), async (req, res) => {
+  console.log('got here.');
   const payload = {
     user: {
       id: req.user.id,
@@ -39,5 +30,26 @@ router.get('/redirect', passport.authenticate('google'), async (req, res) => {
     }
   );
 });
+
+// @route GET api/auth/google/redirect
+// @desc callback route for google to redirect to
+// @access Public
+// router.get('/redirect', passport.authenticate('google'), async (req, res) => {
+//   const payload = {
+//     user: {
+//       id: req.user.id,
+//     },
+//   };
+
+//   jwt.sign(
+//     payload,
+//     config.get('jwtSecret'),
+//     { expiresIn: 360000 },
+//     (err, token) => {
+//       if (err) throw err;
+//       res.json({ token });
+//     }
+//   );
+// });
 
 module.exports = router;
