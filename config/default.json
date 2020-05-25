@@ -1,0 +1,11 @@
+{
+  "mongoURI": "mongodb+srv://admin:Rayallen@123@cluster0-dbpj5.mongodb.net/test?retryWrites=true&w=majority",
+  "jwtSecret": "PopSecretTokenlmao",
+  "google": {
+    "clientID": "591910613663-reliu026hjeut6cc8j4u3jb781g97fje.apps.googleusercontent.com",
+    "clientSecret": "kHd4BYT6VmfKaoUs_I5RlXCL"
+  },
+  "session": {
+    "cookieKey": "mycookiekeyisasecretlmao"
+  }
+}
