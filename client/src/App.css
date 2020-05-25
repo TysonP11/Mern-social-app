@@ -168,6 +168,18 @@ input {
     transform: translate(15%, -50%);
 }
 
+.searching .profiles .profile .info {
+    padding-left: 2rem;
+    width: 100%;
+}
+
+.searching .profiles .profile .follow-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 90%;
+}
+
 /* alert */
 .alert {
     padding: 1rem;
@@ -463,7 +475,7 @@ input {
     background-color: #fff;
     padding: 1rem;
     overflow-y: auto;
-    height: 40%;
+    height: 30vh;
 }
 
 .homepage .profiles .profile {
@@ -472,8 +484,40 @@ input {
     align-items: center;
     background-color: #fff;
     padding: 0.5rem;
-    margin-bottom: 0.5rem;
-    
+    margin-bottom: 0.5rem;   
+}
+
+/* profiles */ 
+#profiles .profile {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #c0c0c0;
+    margin-bottom: 1rem;
+    padding: 1rem;
+}
+
+#profiles .profile .info {
+    margin-left: 2rem;
+    width: 50%;
+}
+
+#profiles .profile .follow-info {
+    display: flex;
+    align-items: center;
+    width: 40%;
+    justify-content: space-between;
+}
+
+#profiles .profile .info button {
+    font-size: 1rem;
+    margin-left: 2rem;
+    width: 6rem;
+}
+
+#profiles .profile .info a:hover {
+    color: #fff;
 }
 
 

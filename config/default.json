@@ -1,0 +1,8 @@
+{
+  "mongoURI": "mongodb://localhost/pop",
+  "jwtSecret": "PopSecretTokenlmao",
+  "gitClientID": "a137f1a398b0646e1bb3",
+  "gitSecret": "336a9cd04f8035c4c40ef91639ef44fec8689ad5"
+}
+
+

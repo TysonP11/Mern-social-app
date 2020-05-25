@@ -24,7 +24,7 @@ const Profiles = ({ getProfiles, profile: { profiles, loading } }) => {
             </p>
           </div>
 
-          <div className='profiles'>
+          <div id='profiles'>
             {loading ? (
               <Spinner />
             ) : profiles.length > 0 ? (

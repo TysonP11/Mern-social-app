@@ -51,7 +51,7 @@ const Search = ({ search, searchInfo }) => {
         })
     }
 
-    return search.loading ? (
+    return search.loading && input.length > 0 ? (
         <Spinner />
     ) : (
         <div className='searching'>
