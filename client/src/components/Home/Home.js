@@ -4,7 +4,7 @@ import Map from './Map';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-const Home = ({ post: { posts, loading } }) => {
+const Home = ({ post: { posts } }) => {
   var markers = posts;
   function addMarkers(map, links) {
     links.forEach((link, index) => {

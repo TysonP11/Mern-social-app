@@ -9,7 +9,7 @@ import {
     GET_PROFILES,
     UPDATE_FOLLOW,
     CLEAR_POSTS,
-    CLEAR_PROFILES
+    CLEAR_PROFILES,
 } from './types'
 
 // Get current user's profile
@@ -35,7 +35,7 @@ export const getCurrentProfile = () => async (dispatch) => {
 }
 
 // Create or update profile
-export const createProfile = (formData, history, edit = false) => async (
+export const editProfile = (formData, history) => async (
     dispatch
 ) => {
     try {
@@ -45,11 +45,7 @@ export const createProfile = (formData, history, edit = false) => async (
             },
         }
 
-        console.log(formData)
-
         const res = await axios.post('/api/profile', formData, config)
-
-        console.log(res)
 
         dispatch({
             type: GET_PROFILE,
@@ -57,23 +53,22 @@ export const createProfile = (formData, history, edit = false) => async (
         })
 
         dispatch(
-            setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success')
+            setAlert('Profile Updated', 'primary')
         )
-
-        if (!edit) {
-            history.push('/dashboard')
-        }
     } catch (err) {
-        console.log(err)
+        const errors = err.response.data.errors
 
-    //       if (errors) {
-    //         errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));
-    //       }
+        if (errors) {
+            errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')))
+        }
 
-    //       dispatch({
-    //         type: PROFILE_ERROR,
-    //         payload: { msg: err.response.statusText, status: err.response.status },
-    //       });
+        dispatch({
+            type: PROFILE_ERROR,
+            payload: {
+                msg: err.response.statusText,
+                status: err.response.status,
+            },
+        })
     }
 }
 
@@ -198,7 +193,7 @@ export const getFollowedProfiles = () => async (dispatch) => {
     dispatch({ type: CLEAR_PROFILE })
     dispatch({ type: CLEAR_PROFILES })
     dispatch({ type: CLEAR_POSTS })
-    
+
     try {
         const res = await axios.get('/api/profile/followedprofile')
 
@@ -216,4 +211,3 @@ export const getFollowedProfiles = () => async (dispatch) => {
         })
     }
 }
-

@@ -34,5 +34,7 @@ export const CLEAR_PROFILES = 'CLEAR_PROFILES';
 
 export const CHANGE_PASSWORD = 'CHANGE_PASSWORD'
 
+export const SEARCH_PROFILES = 'SEARCH_PROFILES'
+
 
 

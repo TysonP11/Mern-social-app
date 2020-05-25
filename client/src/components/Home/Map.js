@@ -1,7 +1,7 @@
 import { functions, isEqual, omit } from 'lodash';
 import React, { useState, useEffect, useRef } from 'react';
 
-function Map({ options, onMount, className, onMountProps }) {
+function Map({ options, onMount, onMountProps }) {
   const ref = useRef();
   const [map, setMap] = useState();
 
@@ -25,8 +25,8 @@ function Map({ options, onMount, className, onMountProps }) {
 
   return (
     <div
-      style={{ height: `80vh`, margin: `1em 0`, borderRadius: `0.5em` }}
-      {...{ ref, className }}
+      id='map'
+      {...{ ref }}
     />
   );
 }

@@ -73,8 +73,6 @@ router.post('/', auth, async (req, res) => {
         avatar,
     } = req.body
 
-    console.log(website)
-
     const profileFields = {}
     profileFields.user = req.user.id
     profileFields.bio = bio

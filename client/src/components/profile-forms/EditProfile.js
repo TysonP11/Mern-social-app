@@ -3,7 +3,7 @@ import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
-    createProfile,
+    editProfile,
     getCurrentProfile,
     deleteAccount,
 } from '../../actions/profile'
@@ -14,10 +14,9 @@ import ChangePassword from '../auth/ChangePassword'
 const EditProfile = ({
     profile: { profile, loading },
     auth,
-    createProfile,
+    editProfile,
     getCurrentProfile,
-    deleteAccount,
-    history,
+    deleteAccount
 }) => {
     const [bio, setBio] = useState('')
     const [youtube, setYoutube] = useState('')
@@ -54,8 +53,7 @@ const EditProfile = ({
         e.preventDefault(e)
 
         if (image === '') {
-            console.log('onSubmit')
-            createProfile(
+            editProfile(
                 {
                     bio: bio,
                     youtube: youtube,
@@ -66,12 +64,10 @@ const EditProfile = ({
                     website: website,
                     phoneNumber: phoneNumber,
                     avatar: auth.user.avatar,
-                },
-                history,
-                true
+                }
             )
         } else {
-            createProfile(
+            editProfile(
                 {
                     bio: bio,
                     youtube: youtube,
@@ -82,9 +78,7 @@ const EditProfile = ({
                     website: website,
                     phoneNumber: phoneNumber,
                     avatar: image[0],
-                },
-                history,
-                true
+                }
             )
         }
     }
@@ -104,24 +98,26 @@ const EditProfile = ({
         this.classList.add('tab-border')
         // grab content item from DOM
         if (this.id === 'tab-user-password') {
-            formHeader.classList.remove('show')
-            formHeader.classList.add('hide')
-            formAction.classList.remove('show')
-            formAction.classList.add('hide')
+            hideHeaderAndAction(formHeader)
+            hideHeaderAndAction(formAction)
         } else {
-            formHeader.classList.remove('hide')
-            formHeader.classList.add('show')
-            formAction.classList.remove('hide')
-            formAction.classList.add('show')
+            showHeaderAndAction(formHeader)
+            showHeaderAndAction(formAction)
         }
         const tabContentItem = document.querySelector(`#${this.id}-content`)
 
         // add show class
         tabContentItem.classList.add('show')
+    }
 
-        console.log(this.id)
+    const showHeaderAndAction = className => {
+        className.classList.remove('hide')
+        className.classList.add('show')
+    }
 
-        
+    const hideHeaderAndAction = className => {
+        className.classList.remove('show')
+        className.classList.add('hide')
     }
 
     // remove border
@@ -141,7 +137,7 @@ const EditProfile = ({
 
     tabItems.forEach((item) => item.addEventListener('click', selectItem))
 
-    return profile === null || loading || auth.loading ? (
+    return loading || auth.loading ? (
         <Spinner></Spinner>
     ) : (
         <Fragment>
@@ -171,15 +167,15 @@ const EditProfile = ({
                         <div className='form-header-content'>
                             {image === '' || image.length === 0 ? (
                                 <img
-                                    src={profile.user.avatar}
+                                    src={auth.user.avatar}
                                     className='image-rounded image-large'
-                                    alt={`${profile.user.name} avatar`}
+                                    alt={`${auth.user.name} avatar`}
                                 />
                             ) : (
                                 <img
                                     src={image[0]}
                                     className='image-rounded image-large'
-                                    alt={`${profile.user.name} avatar`}
+                                    alt={`${auth.user.name} avatar`}
                                 />
                             )}
                             <label>
@@ -338,7 +334,6 @@ const EditProfile = ({
                     <button
                         className='btn btn-danger'
                         onClick={() => {
-                            console.log('deleteAccount')
                             deleteAccount()
                         }}
                     >
@@ -351,7 +346,7 @@ const EditProfile = ({
 }
 
 EditProfile.propTypes = {
-    createProfile: PropTypes.func.isRequired,
+    editProfile: PropTypes.func.isRequired,
     profile: PropTypes.object.isRequired,
     getCurrentProfile: PropTypes.func.isRequired,
     deleteAccount: PropTypes.func.isRequired,
@@ -364,7 +359,7 @@ const mapStateToProps = (state) => ({
 })
 
 export default connect(mapStateToProps, {
-    createProfile,
+    editProfile,
     getCurrentProfile,
     deleteAccount,
 })(withRouter(EditProfile))

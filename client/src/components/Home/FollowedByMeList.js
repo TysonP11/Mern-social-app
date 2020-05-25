@@ -19,10 +19,6 @@ const FollowedByMeList = ({
         <Spinner />
       ) : (
         <Fragment>
-          <div>
-            <p className='lead'>Click on profile to see their post</p>
-          </div>
-
           <div className='profiles'>
             {profiles === null || loading ? (
               <Spinner />

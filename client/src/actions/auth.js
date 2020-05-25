@@ -124,9 +124,14 @@ export const changePassword = (formData, history) => async dispatch => {
       payload: res.data
     })
 
+    dispatch(setAlert('Change password successfully', 'primary'))
+
     history.push('/dashboard')
   } catch (err) {
-    dispatch(setAlert(err.response.data.msg, 'danger'))
+    const errorMessage = err.response.data.msg
+
+    if (errorMessage === 'Invalid credentials') dispatch(setAlert(errorMessage, 'danger'))
+
     const errors = err.response.data.errors
     if (errors) {
       errors.forEach((error) => dispatch(setAlert(error.msg, 'danger')));

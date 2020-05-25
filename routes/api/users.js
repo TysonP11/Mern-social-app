@@ -117,9 +117,6 @@ router.put(
         try {
           let user = await User.findById(req.user.id)
 
-          console.log(user)
-          console.log(currentPassword)
-
           const isMatched = await bcrypt.compare(currentPassword, user.password)
 
           if (!isMatched) {
@@ -129,7 +126,6 @@ router.put(
           
           const salt = await bcrypt.genSalt(10)
           newPassword = await bcrypt.hash(newPassword, salt)
-          console.log(newPassword)
 
           user = await User.findOneAndUpdate({ _id: req.user.id }, { password: newPassword })          
 

@@ -19,12 +19,10 @@ const ProfileItem = ({
 }) => {
   const [showing, toggleShowing] = useState(false);
 
-  console.log(user)
-
   return (
-    <div className='profile bg-light'>
+    <div className='profile'>
       <Link to={`/profile/${user._id}`}>
-        <img className='round-img' src={user.avatar} alt='' />
+        <img className='image-rounded image-xl' src={user.avatar} alt='' />
       </Link>
       <div>
         <strong>{user.name}</strong>
@@ -41,7 +39,7 @@ const ProfileItem = ({
                 )}
               {!already ? (
                 <button
-                  onClick={(e) => follow(_id)}
+                  onClick={() => follow(_id)}
                   type='button'
                   className='btn btn-primary'
                 >
@@ -67,7 +65,7 @@ const ProfileItem = ({
         (!showing ? (
           <Fragment>
             <button
-              onClick={(e) => {
+              onClick={() => {
                 getMorePostsById(user._id);
                 toggleShowing(!showing);
               }}
@@ -80,7 +78,7 @@ const ProfileItem = ({
         ) : (
           <Fragment>
             <button
-              onClick={(e) => {
+              onClick={() => {
                 removePostById(user._id);
                 toggleShowing(!showing);
               }}

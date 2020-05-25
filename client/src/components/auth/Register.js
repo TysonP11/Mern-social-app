@@ -32,7 +32,7 @@ export const Register = ({
     }
 
     if (isAuthenticated) {
-        return <Redirect to='/create-profile' />
+        return <Redirect to='/edit-profile' />
     }
     return (
         <Fragment>

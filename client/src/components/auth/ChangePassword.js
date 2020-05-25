@@ -16,18 +16,13 @@ const ChangePassword = ({ changePassword, setAlert, history }) => {
 
     const { currentPassword, newPassword, confirmNewPassword } = formData
 
-    console.log(formData)
-
     const onChange = (event) => {
         setFormData({ ...formData, [event.target.name]: event.target.value })
     }
 
     const onSubmit = (event) => {
-        console.log('onSubmit')
         event.preventDefault()
-        console.log(confirmNewPassword !== newPassword)
         if (confirmNewPassword !== newPassword) {
-            console.log('not match')
             setAlert('Password do not match', 'danger')
         } else {
             changePassword({ currentPassword, newPassword }, history)

@@ -10,7 +10,6 @@ import Post from './components/Post/Post';
 import Posts from './components/Posts/Posts';
 import PostForm from './components/Posts/PostForm';
 import Dashboard from './components/dashboard/Dashboard';
-import CreateProfile from './components/profile-forms/CreateProfile';
 import EditProfile from './components/profile-forms/EditProfile';
 import PrivateRoute from './components/routing/PrivateRoute';
 import Profiles from './components/profiles/Profiles';
@@ -45,14 +44,9 @@ const App = () => {
             <Switch>
               <Route exact path='/register' component={Register} />
               <Route exact path='/login' component={Login} />
+              <Route exact path='/profiles' component={Profiles} />
               <PrivateRoute exact path='/profile/:id' component={Profile} />
-              <PrivateRoute exact path='/profiles' component={Profiles} />
               <PrivateRoute exact path='/dashboard' component={Dashboard} />
-              <PrivateRoute
-                exact
-                path='/create-profile'
-                component={CreateProfile}
-              />
               <PrivateRoute
                 exact
                 path='/edit-profile'

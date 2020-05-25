@@ -2,7 +2,9 @@ import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+
 import { logout } from '../../actions/auth'
+import Search from './Search'
 
 export const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
     const authLinks = (
@@ -63,6 +65,7 @@ export const Navbar = ({ auth: { isAuthenticated, loading }, logout }) => {
                         <i className='fas fa-search-location'></i> Hapi
                     </Link>
                 </h1>
+                <Search />
                 {!loading && (
                     <Fragment>
                         {isAuthenticated ? authLinks : guestLinks}
