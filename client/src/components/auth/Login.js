@@ -3,6 +3,8 @@ import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { login } from '../../actions/auth';
+import GoogleLogin from 'react-google-login';
+import FacebookLogin from 'react-facebook-login';
 
 export const Login = ({ login, isAuthenticated }) => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,14 @@ export const Login = ({ login, isAuthenticated }) => {
   });
 
   const { email, password } = formData;
+
+  const responseGoogle = (res) => {
+    console.log('google', res);
+  };
+
+  const responseFacebook = (res) => {
+    console.log('facebook', res);
+  };
 
   const onChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -57,6 +67,22 @@ export const Login = ({ login, isAuthenticated }) => {
         <p className='my-1'>
           Don't have an Account? <Link to='/register'>Sign Up</Link>
         </p>
+        <FacebookLogin
+          appId='332181767747129'
+          autoLoad={true}
+          textButton='Facebook'
+          fields='name, email, picture'
+          callback={responseFacebook}
+          cssClass='btn btn-primary'
+        />
+
+        <GoogleLogin
+          clientId='113765765033-i4gafkqoaqmpl5qke12nrbqhh0jknd95.apps.googleusercontent.com'
+          buttonText='Google'
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cssClass='btn btn-light'
+        />
       </section>
     </Fragment>
   );
